@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId(PriceChanges::COL_PRODUCT_ID)->constrained()->references(Product::COL_ID)->on(Product::TABLE_NAME)->onDelete('cascade');
             $table->decimal(PriceChanges::COL_NEW_PRICE, 10, 2);
+            $table->decimal(PriceChanges::COL_OLD_PRICE, 10, 2);
             $table->timestamps();
         });
     }

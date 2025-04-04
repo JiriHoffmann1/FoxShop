@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string(Product::COL_NAME);
             $table->enum(Product::COL_CATEGORY, array_column(CategoryNames::cases(), 'value'));
             $table->decimal(Product::COL_PRICE, 10, 2);
+            $table->integer(Product::COL_STOCK_QUANTITY)->default(0);
             $table->boolean(Product::COL_ACTIVE)->default(false);
             $table->timestamps();
         });

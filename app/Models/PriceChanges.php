@@ -12,13 +12,13 @@ class PriceChanges extends Model {
     const TABLE_NAME = 'price_changes',
         COL_ID = 'id',
         COL_PRODUCT_ID = 'product_id',
-//        COL_OLD_PRICE = 'old_price',
+        COL_OLD_PRICE = 'old_price',
         COL_NEW_PRICE = 'new_price',
         COL_CREATED_AT = 'created_at',
         RELATION_PRODUCT = 'product';
     protected $fillable = [
         self::COL_PRODUCT_ID,
-//        self::COL_OLD_PRICE,
+        self::COL_OLD_PRICE,
         self::COL_NEW_PRICE,
     ];
 
