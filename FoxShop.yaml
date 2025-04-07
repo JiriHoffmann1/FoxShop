@@ -1,0 +1,346 @@
+openapi: 3.0.0
+info:
+  title: FoxShop
+  description: Database of forest goods
+  contact:
+    name: Jiří Hoffmann
+  version: 1.0.0  
+servers:
+  - url: http://127.0.0.1:8000/
+paths:
+  /api/product:
+    post:
+      summary: Product create
+      description: Operation to create a new product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - category
+                - stockQuantity
+                - price
+              properties:
+                name:
+                  type: string
+                  description: Name of the product
+                  example: Jablko
+                category:
+                  type: string
+                  enum: [Ovoce, Ořechy, Zelenina]
+                  description: Product category
+                  example: Ovoce
+                stockQuantity:
+                  type: integer
+                  minimum: 0
+                  description: Number of pieces in stock
+                  example: 10
+                price:
+                  type: number
+                  format: float
+                  minimum: 0
+                  example: 36
+                  description: Product price
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string 
+                    example: The name field is required. (and 1 more error)
+                  errors:
+                    type: object
+                    additionalProperties:
+                      type: array
+                      items:
+                        type: string
+                        example: The selected category is invalid
+                        
+  /api/product/{id}:
+    put:
+      summary: Product update
+      description: Updates an existing product by ID. If the price changes, a record of the price change is stored.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Product ID  
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - category
+                - stockQuantity
+                - price
+              properties:
+                name:
+                  type: string
+                  description: Name of the product
+                  example: Jablko
+                category:
+                  type: string
+                  enum: [Ovoce, Ořechy, Zelenina]
+                  description: Product category
+                  example: Ovoce
+                stockQuantity:
+                  type: integer
+                  minimum: 0
+                  description: Number of pieces in stock
+                  example: 10
+                price:
+                  type: number
+                  format: float
+                  minimum: 0
+                  example: 36
+                  description: Product price
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string 
+                    example: The name field is required. (and 1 more error)
+                  errors:
+                    type: object
+                    additionalProperties:
+                      type: array
+                      items:
+                        type: string
+                        example: The selected category is invalid
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: No query results for model [App\\Models\\Product] {id}
+                  exception:
+                    type: string
+                    example: Symfony\\Component\\HttpKernel\\Exception\\NotFoundHttpException
+    delete:
+      summary: Product delete
+      description: Deletes a product by its ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Product ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Product deleted successfully
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: No query results for model [App\\Models\\Product] {id}
+                  exception:
+                    type: string
+                    example: Symfony\\Component\\HttpKernel\\Exception\\NotFoundHttpException
+                    
+    get:
+      summary: Get existing product
+      description: Retrieves a specific product by its ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Product ID
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: No query results for model [App\\Models\\Product] {id}
+                  exception:
+                    type: string
+                    example: Symfony\\Component\\HttpKernel\\Exception\\NotFoundHttpException              
+            
+      
+    
+  /api/products/list:
+    get:
+      summary: Get list of products
+      description: Returns a list of products. Supports filtering by product name, category, and in-stock status.
+      parameters: 
+        - name: name
+          in: query
+          description: Filter products by name
+          required: false
+          schema:
+            type: string
+        - name: category
+          in: query
+          description: Filter products by category name
+          required: false
+          schema:
+            type: string
+            enum: [Ovoce, Ořechy, Zelenina]
+        - name: inStock
+          in: query
+          description: Filter products by in-stock status. NULL - gets all products. FALSE - gets only out of stock. TRUE - gets only in stock
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/Product'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string 
+                    example: The selected category is invalid.
+                  errors:
+                    type: object
+                    additionalProperties:
+                      type: array
+                      items:
+                        type: string
+                        example: The selected category is invalid
+  /api/product/{id}/price-changes:
+    get:
+      summary: Get price changes records for a product.
+      description: Returns all historical price changes for the specified product.
+      parameters:
+        - name: id
+          in: path
+          description: Product ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: array
+                    items:
+                      $ref: '#/components/schemas/PriceChange'
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        example: The price of this product hasn't been changed yet
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: No query results for model [App\\Models\\Product] {id}
+                  exception:
+                    type: string
+                    example: Symfony\\Component\\HttpKernel\\Exception\\NotFoundHttpException  
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Lískový ořech"
+        category:
+          type: string
+          example: "Ořechy"
+          enum: [Ovoce, Ořechy, Zelenina]
+        stockQuantity:
+          type: integer
+          example: 10
+        price:
+          type: string
+          example: "99.99"
+    PriceChange:
+      type: object
+      properties:
+        product_id:
+          type: integer
+          example: 42
+        old_price:
+          type: string
+          example: "19.99"
+        new_price:
+          type: string
+          example: "24.99"
+        created_at:
+          type: string
+          format: date-time
+          example: '2025-03-30T12:45:00Z'      
+

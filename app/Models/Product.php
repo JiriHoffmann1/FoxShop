@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Product extends Model {
     /**
@@ -15,18 +16,19 @@ class Product extends Model {
         COL_CATEGORY = 'category',
         COL_NAME = 'name',
         COL_STOCK_QUANTITY = 'stock_quantity',
-        COL_ACTIVE = 'active',
         COL_PRICE = 'price',
         RELATION_PRICE_CHANGES = 'priceChanges';
     protected $fillable = [
         self::COL_CATEGORY,
         self::COL_NAME,
-        self::COL_ACTIVE,
         self::COL_PRICE,
         self::COL_STOCK_QUANTITY
     ];
-    public function priceChanges(): BelongsTo {
-        return $this->belongsTo(PriceChanges::class, PriceChanges::COL_PRODUCT_ID);
+    /**
+     * @return HasMany
+     */
+    public function priceChanges(): HasMany {
+        return $this->hasMany(PriceChange::class, PriceChange::COL_PRODUCT_ID);
     }
 
 }
