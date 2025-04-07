@@ -14,7 +14,7 @@ After you complete all those steps, the application is set up and ready to be us
 3) On the first run of the application, run the following command: "php artisan migrate" to create the database 
 4) Now you can make requests to this application using your localhost address.
 
-#Recommendations
+## Recommendations
 1) I recommend using Postman or similar program to make requests to this application.
 2) If needed, overwrite the "accept" parameter in the request headers to "application/json". This is done to make sure that the response is in JSON format. 
     - Without this step, laravel might be returning HTML responses to failed request validations (422 responses).
